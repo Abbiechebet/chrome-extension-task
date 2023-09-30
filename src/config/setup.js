@@ -1,13 +1,12 @@
-import { v2 as cloudinary } from 'cloudinary';
-import { CloudinaryStorage } from 'multer-storage-cloudinary';
 import multer from 'multer';
 
-const storage = new CloudinaryStorage({
-    cloudinary: cloudinary,
-    params: {
-        folder: 'video-uploads',
-        resource_type: 'video',
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, './uploads/');
     },
+    filename: (req, file, cb) => {
+        cb(null, file.originalname);
+    }
 });
 const parser = multer({ storage: storage });
 

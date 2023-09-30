@@ -1,9 +1,8 @@
 import { Schema, model } from "mongoose"
 
 const VideoSchema = new Schema({
-    title: String,
-    cloudinary_id: String,
-    cloudinary_url: String,
+    tittle: String,
+    filename: String,
     transcript: String
 });
 
