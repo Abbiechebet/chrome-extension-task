@@ -1,12 +1,18 @@
-import {Router} from "express"
-import { uploadVideo, getAllVideos, getVideo, streamVideo } from "../controller/video.js";
-import  parser from "../config/setup.js";
-
+import { Router } from 'express'
 const router = Router()
+import multer, { memoryStorage } from 'multer'
+const storage = memoryStorage()
+const upload = multer({ storage: storage })
 
-router.post('/upload-video', parser.single('video'), uploadVideo);
-router.get('/get-videos', getAllVideos);
-router.get('/get-video/:id', getVideo);
-router.get('/stream-video/:filename', streamVideo);
+import { startVideo, pauseVideo, resumeVideo, stopVideo, getVideo, saveChunckVideo, getSRTFile, uploadAll } from '../controller/videoController.js'
 
-export {router}
+router.post('/save', upload.single('file'), saveChunckVideo)
+router.get('/start', startVideo)
+router.post('/upload', uploadAll)
+router.post('/pause', pauseVideo)
+router.post('/resume', resumeVideo)
+router.post('/stop', upload.single('file'), stopVideo)
+router.get('/:id', getVideo)
+router.get('/srt/:id', getSRTFile)
+
+export default router

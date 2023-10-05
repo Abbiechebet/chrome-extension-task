@@ -1,29 +1,30 @@
 import express from "express";
 import dotenv from "dotenv";
-import mongoose from "mongoose";
+import fs from "fs";
+import cors from "cors";
 import morgan from "morgan";
 import { globalErrorHandler } from "./src/utils/globalErrHandler.js";
 import { config } from "./src/config/index.js";
-import { router as videoRouter } from "./src/route/videoRoute.js";
+import videoRouter from './src/route/videoRoute.js';
 
 const app = express();
 
 dotenv.config();
-
-mongoose
-  .connect(config.mongodb_connection_url, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log("Database connection established"))
-  .catch((e) => console.log(e.message));
-
 const port = config.port || 3000;
 
-app.use(morgan("tiny"));
+app.use(express.static('./public'));
 app.use(express.json());
+app.use(cors());
+app.use(morgan("tiny"));
 
-app.use("/api", videoRouter);
+app.use('/api/video', videoRouter);
 
 app.use(globalErrorHandler);
 
 app.listen(port, () => {
-  console.log(`Server runnning on port: ${port}`);
+
+    if (!fs.existsSync('./controller/videos')) {
+        fs.mkdirSync('./controller/videos', { recursive: true });
+    }
+    console.log(`Server listening on PORT: ${port}...`);
 });
